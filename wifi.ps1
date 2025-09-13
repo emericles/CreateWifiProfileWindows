@@ -71,7 +71,7 @@ Function CreaFichero {
     #Genero un UUID tipo 4 (el que microsoft dice que es un guid pero que como son retrasaos pos le ponen un puto nombre distinto)
     $global:NombreFichero = New-Guid  #La creo global para llamarla luego donde me salga del pijo
     if ( !(Test-Path -Path $env:TEMP/$NombreFichero) ){   #Compruebo si existe el fichero que voy a generar
-        $Perfil_Wifi | Out-File -FilePath $env:TEMP/$NombreFichero
+        $Perfil_Wifi | Out-File -FilePath $env:TEMP/$global:NombreFichero
         CompruebaPerfil  #Llamo a la funcion de comprobar el perfil con netsh, bastante obvio el nombre, pero mejor documentao que encallao
     }else{
         Write-Host "Existe el fichero, vaya casualidad, genero uno nuevo"
@@ -92,3 +92,4 @@ If ((New-Object Security.Principal.WindowsPrincipal $IsAdmin).IsInRole([Security
 }else{
     CreaFichero
 }
+
