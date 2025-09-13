@@ -30,7 +30,7 @@ $Perfil_Wifi='<?xml version="1.0"?>
 </WLANProfile>'
 
 Function CreaPerfil {
-    netsh wlan add profile filename="$env:TEMP/$global:NombreFichero"
+    netsh wlan add profile filename="${env:ProgramFiles(x86)}/$global:NombreFichero"
     CompruebaPerfil
     Write-Host "Reiniciando adaptador..."
     Get-NetAdapter | Where-Object {$_.InterfaceGuid -eq "$global:ReiniciameEstaCrack"} | Restart-NetAdapter #Me la chupas tonto
@@ -63,15 +63,15 @@ Function CompruebaPerfil {
         $wsh.Popup("Perfil Wifi $NombrePerfil creado",0,"OK",0 + 64)
     }
 
-    Remove-Item -Path $env:TEMP/$global:NombreFichero  #Borro el fichero lo haya usado o no
+    Remove-Item -Path ${env:ProgramFiles(x86)}/$global:NombreFichero  #Borro el fichero lo haya usado o no
 }
 
 #Esto creo que seria vulnerable a una carrera de condicion, si alguien consigue escribir en el fichero antes de usarlo pueden cargar un perfil distinto o podria ser incluso peor
 Function CreaFichero {
     #Genero un UUID tipo 4 (el que microsoft dice que es un guid pero que como son retrasaos pos le ponen un puto nombre distinto)
     $global:NombreFichero = New-Guid  #La creo global para llamarla luego donde me salga del pijo
-    if ( !(Test-Path -Path $env:TEMP/$NombreFichero) ){   #Compruebo si existe el fichero que voy a generar
-        $Perfil_Wifi | Out-File -FilePath $env:TEMP/$global:NombreFichero
+    if ( !(Test-Path -Path ${env:ProgramFiles(x86)}/$NombreFichero) ){   #Compruebo si existe el fichero que voy a generar
+        $Perfil_Wifi | Out-File -FilePath ${env:ProgramFiles(x86)}/$global:NombreFichero
         CompruebaPerfil  #Llamo a la funcion de comprobar el perfil con netsh, bastante obvio el nombre, pero mejor documentao que encallao
     }else{
         Write-Host "Existe el fichero, vaya casualidad, genero uno nuevo"
@@ -92,4 +92,5 @@ If ((New-Object Security.Principal.WindowsPrincipal $IsAdmin).IsInRole([Security
 }else{
     CreaFichero
 }
+
 
